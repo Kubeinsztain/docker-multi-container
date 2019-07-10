@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t kubeinsztain/test-client -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run kubeinsztain/test-client npm test -- --coverage
+
+after_success:
+  - docker build -t kubeinsztain/multi-client ./client
+  - docker build -t kubeinsztain/multi-nginx ./nginx
+  - docker build -t kubeinsztain/multi-server ./server
+  - docker build -t kubeinsztain/multi-worker ./worker
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to docker hub
+  - docker push kubeinsztain/multi-client
+  - docker push kubeinsztain/multi-nginx
+  - docker push kubeinsztain/multi-server
+  - docker push kubeinsztain/multi-worker
