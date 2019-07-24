@@ -23,7 +23,7 @@
             "memory": 128
         },
         {
-            "name": "nginx-router",
+            "name": "nginx",
             "image": "kubeinsztain/multi-nginx",
             "hostname": "nginx",
             "essential": true,
